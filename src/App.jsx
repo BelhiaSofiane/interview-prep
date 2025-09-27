@@ -1,18 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useDebounce } from './custom hooks/useDebounce'
 import './App.css'
 
 function App() {
+  const [value, setValue] = useState('')
   const [data, setData] = useState([])
 
-  const debouncedValue = useDebounce(data, 300)
+  
+  const debouncedValue = useDebounce(value, 1000)
 
-  const handleChange = (e) => {
-    fetchData(e.target.value)
-  }
 
   useEffect(() => {
-    console.log(debouncedValue)
+    if(debouncedValue){
+      fetchData(debouncedValue)
+    }
   }, [debouncedValue])
 
   async function fetchData(q) {
@@ -22,6 +23,7 @@ function App() {
         throw new Error(`fetch failed ${res.status} & ${res.statusText}`)
       }
       const result = await res.json()
+      console.log(result.items[0])
       setData(result)
     } catch (e) {
       console.error(e)
@@ -30,8 +32,21 @@ function App() {
 
   return (
     <>
-      <input className='border' type="text" onChange={handleChange} />
-      <p>{debouncedValue.total_count}</p>
+      <input 
+      className='border flex gap-1 items-center rounded-xl px-2' 
+      type="text" 
+      onChange={e => setValue(e.target.value)}
+      placeholder='Search users' />
+      {debouncedValue && <p className='border rounded-xl w-1/2 p-2'>{data.items.map( item =>{
+        return (
+          <div className='flex items-center justify-center gap-1 border rounded-xl px-2 mt-1' key={item.id}>
+            <img className='absolute ml-5 left-0 w-5 h-5 rounded-full' src={item.avatar_url} alt={item.login} />
+            <p className='' >
+              <a href={item.html_url} target='_blank'>{item.login}</a>
+            </p>
+          </div>
+        )
+      })}</p>}
     </>
   )
 }
