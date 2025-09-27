@@ -42,6 +42,8 @@ function App() {
       type="text" 
       onChange={e => setQuery(e.target.value)}
       placeholder='Search users' />
+      {error && <div className='text-red-500'>{error}</div>}
+      {status === 'loading' && <div>Loading...</div>}
       {debouncedValue && <div className='border rounded-xl w-1/2 p-2'>{data.map( item =>{
         return (
           <div className='flex items-center justify-center gap-1 border rounded-xl px-2 mt-1' key={item.id}>
