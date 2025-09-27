@@ -4,6 +4,8 @@ import './App.css'
 
 function App() {
   const [query, setQuery] = useState('')
+  const [error, setError] = useState(null) // null | string
+  const [status, setStatus] = useState('idle') // idle | loading | success | error
   const [data, setData] = useState([])
 
   
@@ -17,16 +19,19 @@ function App() {
   }, [debouncedValue])
 
   async function fetchData(q) {
+    setStatus('loading')
     try {
       const res = await fetch(`https://api.github.com/search/users?q=${q}`)
       if(!res.ok) {
         throw new Error(`fetch failed ${res.status} & ${res.statusText}`)
       }
       const result = await res.json()
-      console.log(result.items[0])
       setData(result.items)
+      setStatus('success')
     } catch (e) {
       console.error(e)
+      setStatus('error')
+      setError(e.message)
     }
   }
 
