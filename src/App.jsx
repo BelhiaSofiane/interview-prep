@@ -100,8 +100,8 @@ function App() {
         onChange={e => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' || e.key === 'ArrowDown' ? containerRef.current.focus() : null}
         placeholder='Search users' />
-      {error && <div className='text-red-500'>{error}</div>}
-      {status === 'loading' && <div>Loading...</div>}
+      {error && <div className='text-red-500' id='error-msg' role='alert' aria-live='assertive' aria-label='error'>{error}</div>}
+      {status === 'loading' && <div role='status' aria-live='polite' aria-label='loading' >Loading...</div>}
       {debouncedValue && <div
         className='border rounded-xl w-1/2 p-2'
         ref={containerRef}
@@ -120,7 +120,7 @@ function App() {
         return (
           <div
             ref={(el) => (itemRefs.current[index] = el)}
-            id={`result-${item.id}`}
+            id={`result-${index}`}
             key={item.id}
             role='option'
             aria-selected={isActive}
